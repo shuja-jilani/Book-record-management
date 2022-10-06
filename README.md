@@ -5,16 +5,19 @@
 
 This is a book record management API backend for the management of records and books 
 
+# API Documentation link 
+
+https://documenter.getpostman.com/view/23705255/2s83zfPjpw
 # Routes and Endpoints 
 <!-- /users hi end point h abhi   -->
-## /users 
-POST: Create a new user  
-GET: Get all list of users 
+## /users               
+POST: Create a new user ✅  
+GET: Get all list of users ✅
 
 <!-- ek id hoti h , jo har user ke liye different hoti h , this will be used like a dynamic route , qki we will be using the id variable , but hr user ke liye wo differently hoga , isliye dynamic -->
 
 ## /users/{id}
-GET: Get a user by id 
+GET: Get a user by id ✅
 PUT: Update a user by id 
 DELETE: Delete a user by id (check if he/she still has an issued book) (is there any fine to be paid)
 <!-- us user ko delete nhi krna jisne already book le rkhi h, ya fir jiske upr fine pending h  -->
