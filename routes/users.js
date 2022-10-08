@@ -142,5 +142,85 @@ router.delete('/:id', (req, res) => {
     })
 })
 
+/*
+* Route: /users/subscription-details/:id
+* Method: GET
+* Description : Get all user subscription details
+* Access : Public  
+* Parameters : id
+*/
+
+router.get('/subscription-details/:id', (req, res) => {
+    const { id } = req.params;
+    const user = users.find((each) => each.id === id);
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: "User not found",
+        })
+    }
+    //issued date se kitne din hn for the subscription to last 
+    const getDateInDays = (data = "") => { //hum isme date de skte hn in format of 01/12/2021 etc
+        //default data =""
+
+        let date;
+        if (data === "") {
+            //current date
+            date = new Date(); //millisecond tk ka ajaega isme
+        }
+        else {
+            //date on basis of data variable
+            date = new Date(data);
+        }
+
+        let days = Math.floor(date / (1000 * 60 * 60 * 24)); //millisecond transformation
+        return days;
+    };
+
+    const subscriptionType = (date) => {
+        if (user.subscriptionType === "Basic") {
+            date = date + 90;
+        }
+        else if (user.subscriptionType === "Standard") {
+            date = date + 180;
+        }
+        else if (user.subscriptionType === "Premium") {
+            date = date + 365;
+        }
+        return date;
+    };
+
+    //subscription expiration calculation 
+    //January 1, 1970, UTC.  in milliseconds 
+    //the number of milliseconds that have passed since jna 1 ,1970
+
+    let returnDate = getDateInDays(user.returnDate);
+    let currenDate = getDateInDays();
+    //agr current date > return date then fine 
+    let subscriptionDate = getDateInDays(user.subscriptionDate);
+
+    //ab function run krke ye pta chlega subscription kitne din ka tha
+    let subscriptionExpiration = subscriptionType(subscriptionDate);
+
+    const data = {
+        ...user,
+        subscriptionExpired: subscriptionExpiration < currenDate, //a boolean 
+
+        daysLeftForExpiration: subscriptionExpiration <= currenDate ? 0 : subscriptionExpiration - currenDate, // kitne din bache h 
+
+        //ager book nhi return kri , to uska fine h 100, + agar subscription bhi khtm ho fir total fine  200
+        fine: returnDate < currenDate ?
+            subscriptionExpiration <= currenDate ? 200 : 100
+            : 0,
+    }
+
+    return res.status(200).json({
+        success: true,
+        data,
+    })
+
+})
+
+
 //index.js me ye router import krane ke liye yahan se export bhi krana pdega like
 module.exports = router; 
