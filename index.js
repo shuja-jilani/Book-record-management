@@ -1,4 +1,8 @@
 const express = require('express');
+const dotenv = require('dotenv');
+
+//database connection 
+const DbConnection = require('./databaseconnection');
 
 //JSON data import from other files on the folder , {} ke andr jo bhi likhenge , that will be read and recognised as an object, js wala object , also a json 
 // const { users } = require("./data/users.json");
@@ -8,8 +12,12 @@ const express = require('express');
 const usersRouter = require('./routes/users'); //js file ke liye extension .js likhna nhi hota 
 const booksRouter = require('./routes/books');
 
+dotenv.config();
 
 const app = express();
+
+//node js server se connect hote hi databse se connect kro 
+DbConnection();
 
 const PORT = 8081;
 
