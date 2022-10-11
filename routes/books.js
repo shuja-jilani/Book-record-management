@@ -4,7 +4,10 @@ const { books } = require("../data/books.json");
 const { users } = require("../data/users.json");
 const { getAllBooks,
     getSingleBookById,
-    getAllIssuedBooks } = require('../Controllers/book-controller');
+    getAllIssuedBooks,
+    addNewBook,
+    updateBookById,
+    getSingleBookByName } = require('../Controllers/book-controller');
 
 const { UserModel, BookModel } = require("../models"); //yahn ../models ke baad index.js specifiy krna zruri nhi h because index.js is the default file in any directory
 
@@ -30,6 +33,9 @@ router.get('/', getAllBooks)
 
 router.get('/:id', getSingleBookById)
 
+router.get("/getbook/name/:name", getSingleBookByName); //book ka name likhte hue in the route, use %20 for spaces
+
+
 /*
 * Route: /books/issued/by-user
 * Method: GET
@@ -40,6 +46,8 @@ router.get('/:id', getSingleBookById)
 
 //ab isme hume user ki bhi zrurt h qki issued book ka data user wale me h 
 router.get('/issued/by-user', getAllIssuedBooks)
+
+
 
 /*
 * Route: /books/issued/withFine
@@ -142,31 +150,7 @@ router.get('/issued/withFine', (req, res) => {
 * Data: author , name, genre, price, publisher,id
 */
 
-router.post('/', (req, res) => {
-    const { data } = req.body;
-    if (!data) {
-        return res.status(400).json({
-            success: false,
-            message: "No data provided",
-        })
-    }
-
-    //agr wo book pehle se h to
-    const book = books.find((each) => each.id === data.id);
-
-    if (book) {
-        return res.status(404).json({
-            success: false,
-            message: "Book already exists with this id, please use a unique id",
-        })
-    }
-
-    const allBooks = [...books, data];
-    return res.status(200).json({
-        success: true,
-        data: allBooks,
-    })
-})
+router.post('/', addNewBook)
 
 /*
 * Route: /books/:id
@@ -177,30 +161,7 @@ router.post('/', (req, res) => {
 * Data: author , name, genre, price, publisher,id
 */
 
-router.put('/:id', (req, res) => {
-    const { id } = req.params;
-    const { data } = req.body;
-
-    const book = books.find((each) => each.id === id);
-    if (!book) {
-        return res.status(400).json({
-            success: false,
-            message: "Book not found with this particular id",
-        })
-    }
-
-    const udpateData = books.map((each) => {
-        if (each.id === id) {
-            return { ...each, ...data }; //purane ko naye se replace
-        }
-        return each;
-    })
-
-    return res.status(200).json({
-        success: true,
-        data: udpateData,
-    })
-})
+router.put('/:id', updateBookById);
 
 //default export., qki ek hi chiz export kr rhe h
 module.exports = router;

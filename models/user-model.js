@@ -22,6 +22,10 @@ const userSchema = new schema(  //uske attributes ke bare me btana + unka hona c
             ref: "Book", //mtlb jo id hum isme store krne wale hn that will be from the book collection
             required: false,
         },
+        issuedDate: {
+            type: String,
+            required: false,
+        },
         returnDate: {
             type: String,
             required: false,
